@@ -53,7 +53,7 @@ fi
 
 clear
 
-IP=`ifconfig eth0 | grep "inet addr" | awk '{print $2}' | cut -d: -f2`
+IP=`hostname -I`
 DG=`route | grep "default" | awk '{print $2}'`
 
 echo "Your current IP: $IP"

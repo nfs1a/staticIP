@@ -1,18 +1,18 @@
 #!/bin/bash
+#This is a bash script to set a static IP.
 
 getinfo()
 {
-  read -p "Enter static IP (looks like 192.168.0.105) : " staticip  
-  read -p "Enter DefGw     (looks like 192.168.0.1)   : " routerip
-  read -p "Enter subnet    (looks like 255.255.255.0) : " netmask
-  read -p "Enter DNS       (looks like 192.168.0.1)   : " dns
+  read -p "Enter static IP (eg: 192.168.0.105) : " staticip  
+  read -p "Enter DefGw     (eg: 192.168.0.1)   : " gateway
+  read -p "Enter subnet    (eg: 255.255.255.0) : " netmask
+  read -p "Enter DNS       (eg: 192.168.0.1)   : " dns
 }
 
 writeinterfacefile()
 { 
 cat << EOF > $1 
-# This file describes the network interfaces available on your system
-# and how to activate them. For more information, see interfaces(5).
+# This file describes the network interfaces available on your system.
 # The loopback network interface
 ##auto lo
 ##iface lo inet loopback
@@ -24,7 +24,7 @@ auto eth0
 iface eth0 inet static
 address $staticip
 netmask $netmask
-gateway $routerip 
+gateway $gateway
 dns-nameservers $dns
 EOF
 #don't use any space before of after 'EOF' in the previous line
@@ -35,6 +35,12 @@ EOF
   echo "Restarting interfaces..."
   restartNW
   exit 0
+}
+
+restartNW()
+{
+  stopNW=`sudo ifdown eth0`
+  startNW=`sudo ifup eth0`
 }
 
 file="/etc/network/interfaces"
@@ -60,16 +66,10 @@ getinfo
 echo ""
 echo "Your settings are"
 echo "Static IP       :  $staticip"
-echo "Default Gateway :  $routerip"
+echo "Default Gateway :  $gateway"
 echo "Subnetmask      :  $netmask"
 echo "DNS             :  $dns"
 echo ""
-
-restartNW()
-{
-  stopNW=`sudo ifdown eth0`
-  startNW=`sudo ifup eth0`
-}
 
 while true; 
 do

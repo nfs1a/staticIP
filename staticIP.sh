@@ -1,7 +1,7 @@
 #!/bin/bash
-#This is a bash script to set a static IP.
+#This is a bash script to set a static IP. (Ubuntu)
 
-getinfo()
+readInfo()
 {
   read -p "Enter static IP (eg: 192.168.0.105) : " staticip  
   read -p "Enter DefGw     (eg: 192.168.0.1)   : " gateway
@@ -9,7 +9,7 @@ getinfo()
   read -p "Enter DNS       (eg: 192.168.0.1)   : " dns
 }
 
-writeinterfacefile()
+writeToIntf()
 { 
 cat << EOF > $1 
 # This file describes the network interfaces available on your system.
@@ -43,6 +43,7 @@ restartNW()
   startNW=`sudo ifup eth0`
 }
 
+#Add your path here
 file="/etc/network/interfaces"
 if [ ! -f $file ]; then
   echo ""
@@ -62,7 +63,7 @@ echo ""
 echo "Set up a static IP address"
 echo ""
 
-getinfo
+readInfo
 echo ""
 echo "Your settings are"
 echo "Static IP       :  $staticip"
@@ -75,8 +76,8 @@ while true;
 do
  read -p "Is this configuration correct? [y/n]: " yn 
   case $yn in
-    [Yy]* ) writeinterfacefile $file;;
-    [Nn]* ) getinfo;;
-        * ) echo "Please enter y or n!";;
+    [Yy]* ) writeToIntf $file;;
+    [Nn]* ) readInfo;;
+        * ) echo "Enter y or n!";;
   esac
 done
